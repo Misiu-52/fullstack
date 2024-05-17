@@ -1,10 +1,50 @@
-// const app = require('./app') // the actual Express application
-const config = require('./utils/config')
-const logger = require('./utils/logger')
 const express = require('express')
 const app = express()
+const cors = require('cors')
+const mongoose = require('mongoose')
 
+const blogSchema = new mongoose.Schema({
+  title: String,
+  author: String,
+  url: String,
+  likes: Number
+})
 
-app.listen(config.PORT, () => {
-  logger.info(`Server running on port ${config.PORT}`)
+const Blog = mongoose.model('Blog', blogSchema)
+
+const mongoUrl = 'mongodb+srv://fullstackopen:oPR3vbDHFEa1APns@fullstack.jui31ts.mongodb.net/?retryWrites=true&w=majority&appName=Fullstack'
+mongoose.connect(mongoUrl)
+.then(result => {
+  console.log('connected to MongoDB')
+})
+.catch(error => {
+  console.log('error connecting to MongoDB', error.message)
+})
+
+app.use(cors())
+app.use(express.json())
+
+app.get('/api/blogs', (request, response) => {
+  Blog
+    .find({})
+    .then(blogs => {
+      response.json(blogs)
+    }).catch(error => {
+      console.log(error)
+    })
+})
+
+app.post('/api/blogs', (request, response) => {
+  const blog = new Blog(request.body)
+
+  blog
+    .save()
+    .then(result => {
+      response.status(201).json(result)
+    })
+})
+
+const PORT = 3003
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`)
 })
