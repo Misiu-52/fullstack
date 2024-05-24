@@ -1,25 +1,8 @@
 const express = require('express')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
+const Blog = require('./models/Blog')
 
-const blogSchema = new mongoose.Schema({
-  title: String,
-  author: String,
-  url: String,
-  likes: Number
-})
-
-const Blog = mongoose.model('Blog', blogSchema)
-
-const mongoUrl = 'mongodb+srv://fullstackopen:oPR3vbDHFEa1APns@fullstack.jui31ts.mongodb.net/?retryWrites=true&w=majority&appName=Fullstack'
-mongoose.connect(mongoUrl)
-.then(result => {
-  console.log('connected to MongoDB')
-})
-.catch(error => {
-  console.log('error connecting to MongoDB', error.message)
-})
 
 app.use(cors())
 app.use(express.json())
